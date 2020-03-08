@@ -61,11 +61,9 @@ struct triangle_t** read_file(FILE* file, struct triangle_t** data, int *amount)
     fprintf(stdout, "%d\n", *amount);
 
     data = (struct triangle_t**) calloc(*amount, sizeof(struct triangle_t*));
-    printf("##### triangles array created #####\n");
     assert(data);
     for (i = 0; i < *amount; ++i) {
         data[i] = (struct triangle_t*) calloc(1, sizeof(struct triangle_t));
-        printf("##### triangles[%d] created #####\n", i);
         assert(data[i]);
     }
 
@@ -96,7 +94,6 @@ struct vector_t* count_cross_product(struct vector_t* vec1, struct vector_t* vec
     assert(vec2);
 
     struct vector_t* vec3 = (struct vector_t*) calloc(1, sizeof(struct vector_t));
-    printf("##### cross product created #####\n");
     assert(vec3);
 
     vec3->x = vec1->y * vec2->z - vec1->z * vec2->y;
@@ -136,7 +133,6 @@ void init_triangles(struct triangle_t** data, int tr_amount) {
         cross_product = count_cross_product(&data[i]->vector2, &data[i]->vector3);
         data[i]->area = 0.5 * count_len(cross_product);
         free(cross_product);
-        printf("#### cross product FREED ####\n");
 
     }
     return;
@@ -147,12 +143,10 @@ void clear_all(struct triangle_t** triangles, int tr_amount) {
     for(int i = 0; i < tr_amount; ++i) {
 
         free(triangles[i]);
-        printf("#### triangles[%d] FREED ####", i);
 
     }
 
     free(triangles);
-    printf("#### triangles array FREED ####");
 }
 
 void print_triangles(struct triangle_t** triangles, int amount) {
