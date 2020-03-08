@@ -1,5 +1,6 @@
 #ifndef PROBLEMTS_TRIANGLE_H
 #define PROBLEMTS_TRIANGLE_H
+#include <stdio.h>
 
 
 struct vector_t {
@@ -20,11 +21,14 @@ struct triangle_t {
     double area;
 };
 
+
+void clear_all(struct triangle_t** triangles, int tr_amount);
+
 double find_sum_area(struct triangle_t** triangles, int tr_amount);
 
 double find_max_area(struct triangle_t** triangles, int tr_amount);
 
-struct triangle_t** read_file(const char *name, const char *type, struct triangle_t** data, int *amount);
+struct triangle_t** read_file(FILE* file, struct triangle_t** data, int *amount);
 
 struct vector_t* count_cross_product(struct vector_t* vec1, struct vector_t* vec2);
 

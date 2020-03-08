@@ -1,0 +1,26 @@
+
+CC = gcc
+CFLAGS = -g -Wall -std=c99
+SOURCES = triangle.c triangle_1.c triangle_2.c
+OBJECTS = $(SOURCES:.c=.o)
+
+triangle.o: triangle.c
+	$(CC) $(CFLAGS) triangle.c -c -o triangle.o
+
+triangle_1.o: triangle_1.c
+	$(CC) $(CFLAGS) triangle_1.c -c -o triangle_1.o
+
+triangle_2.o: triangle_2.c
+	$(CC) $(CFLAGS) triangle_2.c -c -o triangle_2.o
+
+
+triangle1: triangle.o triangle_1.o
+	$(CC) $(CFLAGS) triangle.o triangle_1.o -o triangle1
+
+triangle2: triangle.o triangle_2.o
+	$(CC) $(CFLAGS) triangle.o triangle_2.o -o triangle2
+
+.PHONY: clean
+
+clean:
+	rm edit $(OBJECTS)

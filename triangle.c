@@ -6,6 +6,7 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <math.h>
+#include <ctype.h>
 
 
 double find_max_area(struct triangle_t** triangles, int tr_amount) {
@@ -46,43 +47,43 @@ double find_sum_area(struct triangle_t** triangles, int tr_amount) {
     return sum_area;
 }
 
-struct triangle_t** read_file(const char *name, const char *type, struct triangle_t** data, int *amount) {
+struct triangle_t** read_file(FILE* file, struct triangle_t** data, int *amount) {
 
     const int max_coord = 3;
-    FILE* file;
     int i;
     int j;
 
 
-    assert(name);
-    assert(type);
+    *amount = (int) getchar();
+    *amount = *amount - '0';
+    //assert(fscanf(file, "%d\n", amount) == 1);
 
-    if ((file = fopen(name, type)) == NULL) {
-
-        printf("Error opening file.\n");
-        return NULL;
-
-    }
-
-    assert(fscanf(file, "%d ", amount) == 1);
+    fprintf(stdout, "%d\n", *amount);
 
     data = (struct triangle_t**) calloc(*amount, sizeof(struct triangle_t*));
+    printf("##### triangles array created #####\n");
     assert(data);
     for (i = 0; i < *amount; ++i) {
         data[i] = (struct triangle_t*) calloc(1, sizeof(struct triangle_t));
+        printf("##### triangles[%d] created #####\n", i);
         assert(data[i]);
     }
 
     for (i = 0; i < *amount; ++i) {
 
-        assert(fscanf(file, "%lg %lg ", &data[i]->vector1.x, &data[i]->vector1.y) == 2);
+        assert(scanf("%lg %lg %lg %lg %lg %lg", &data[i]->vector1.x, &data[i]->vector1.y,
+                                                &data[i]->vector2.x, &data[i]->vector2.y,
+                                                &data[i]->vector3.x, &data[i]->vector3.y) == 6);
+
         data[i]->vector1.z = 0;
-
-        assert(fscanf(file, "%lg %lg ", &data[i]->vector2.x, &data[i]->vector2.y) == 2);
         data[i]->vector2.z = 0;
-
-        assert(fscanf(file, "%lg %lg ", &data[i]->vector3.x, &data[i]->vector3.y) == 2);
         data[i]->vector3.z = 0;
+
+        fprintf(stdout, "%lg %lg\n", data[i]->vector1.x, data[i]->vector1.y);
+
+        fprintf(stdout, "%lg %lg\n", data[i]->vector2.x, data[i]->vector2.y);
+
+        fprintf(stdout, "%lg %lg\n", data[i]->vector3.x, data[i]->vector3.y);
 
     }
 
@@ -95,6 +96,7 @@ struct vector_t* count_cross_product(struct vector_t* vec1, struct vector_t* vec
     assert(vec2);
 
     struct vector_t* vec3 = (struct vector_t*) calloc(1, sizeof(struct vector_t));
+    printf("##### cross product created #####\n");
     assert(vec3);
 
     vec3->x = vec1->y * vec2->z - vec1->z * vec2->y;
@@ -114,6 +116,7 @@ double count_len(struct vector_t* vec) {
 void init_triangles(struct triangle_t** data, int tr_amount) {
 
     int i;
+    struct vector_t* cross_product = NULL;
 
     for (i = 0; i < tr_amount; ++i) {
 
@@ -130,10 +133,26 @@ void init_triangles(struct triangle_t** data, int tr_amount) {
         data[i]->vector2.len = count_len(&data[i]->vector2);
         data[i]->vector3.len = count_len(&data[i]->vector3);
 
-        data[i]->area = 0.5 * count_len(count_cross_product(&data[i]->vector2, &data[i]->vector3));
+        cross_product = count_cross_product(&data[i]->vector2, &data[i]->vector3);
+        data[i]->area = 0.5 * count_len(cross_product);
+        free(cross_product);
+        printf("#### cross product FREED ####\n");
 
     }
     return;
+}
+
+void clear_all(struct triangle_t** triangles, int tr_amount) {
+
+    for(int i = 0; i < tr_amount; ++i) {
+
+        free(triangles[i]);
+        printf("#### triangles[%d] FREED ####", i);
+
+    }
+
+    free(triangles);
+    printf("#### triangles array FREED ####");
 }
 
 void print_triangles(struct triangle_t** triangles, int amount) {
